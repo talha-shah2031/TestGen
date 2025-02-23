@@ -14,7 +14,7 @@ const Footer = () => {
               <span className="text-xl font-bold text-gray-900">TestGen</span>
             </Link>
             <p className="mt-4 text-gray-500 text-sm">
-              Create comprehensive test papers in minutes with our advanced AI-powered generator.
+              Create comprehensive test papers in minutes with our advanced generator.
               Perfect for teachers and educational institutions.
             </p>
           </div>
