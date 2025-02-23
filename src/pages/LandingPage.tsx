@@ -15,7 +15,7 @@ const LandingPage = () => {
     {
       icon: <Brain className="h-6 w-6 text-indigo-600" />,
       title: 'Smart Generation',
-      description: 'AI-powered question generation for unique and relevant content'
+      description: 'Question generation for unique and relevant content'
     },
     {
       icon: <Clock className="h-6 w-6 text-indigo-600" />,
@@ -54,7 +54,7 @@ const LandingPage = () => {
               transition={{ delay: 0.4 }}
               className="mt-3 max-w-md mx-auto text-base text-gray-500 sm:text-lg md:mt-5 md:text-xl md:max-w-3xl"
             >
-              Create comprehensive test papers in minutes with our advanced AI-powered generator.
+              Create comprehensive test papers in minutes with our advanced generator.
               Perfect for teachers and educational institutions.
             </motion.p>
             <motion.div 
