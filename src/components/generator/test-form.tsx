@@ -3,6 +3,7 @@ import SelectWrapper from "./select-wrapper"
 
 const subjects = [
   { value: "chemistry", label: "Chemistry", enabled: true },
+  { value: "psychology", label: "Psychology", enabled: true },
   { value: "physics", label: "Physics", enabled: false },
   { value: "biology", label: "Biology", enabled: false },
   { value: "mathematics", label: "Mathematics", enabled: false },
@@ -11,7 +12,7 @@ const subjects = [
 const grades = [
   { value: "grade9", label: "9th Grade", enabled: true },
   { value: "grade10", label: "10th Grade", enabled: false },
-  { value: "grade11", label: "11th Grade", enabled: false },
+  { value: "grade11", label: "11th Grade", enabled: true },
   { value: "grade12", label: "12th Grade", enabled: false },
 ]
 
