@@ -1,3 +1,95 @@
+@import url("https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400..700&family=Kode+Mono:wght@400..700&family=Nanum+Gothic+Coding&family=Noto+Nastaliq+Urdu:wght@400..700&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap");
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.font-urdu {
+  font-family: "Noto Nastaliq Urdu", serif;
+  font-optical-sizing: auto;
+}
+
+.rtl {
+  direction: rtl;
+  text-align: right;
+}
+
+.ltr {
+  direction: ltr;
+  text-align: left;
+}
+#pen1 {
+    animation: pen1 2s infinite ease;
+  }
+  
+  #pen2 {
+    animation: pen2 2s infinite ease;
+  }
+  
+  #pen3 {
+    animation: pen3 2s infinite ease;
+  }
+  
+  #loader {
+    animation: loaderColor 5s infinite ease;
+  }
+  
+  @keyframes pen1 {
+    0% {
+      transform: translateY(0px);
+    }
+  
+    15% {
+      transform: translateY(-10px);
+    }
+  
+    30% {
+      transform: translateY(0px);
+    }
+  }
+  
+  @keyframes pen2 {
+    30% {
+      transform: translateY(0px);
+    }
+  
+    45% {
+      transform: translateY(-10px);
+    }
+  
+    60% {
+      transform: translateY(0px);
+    }
+  }
+  
+  @keyframes pen3 {
+    60% {
+      transform: translateY(0px);
+    }
+  
+    75% {
+      transform: translateY(-10px);
+    }
+  
+    90% {
+      transform: translateY(0px);
+    }
+  }
+  
+  @keyframes loaderColor {
+    0% {
+      fill: #513b56;
+    }
+  
+    33% {
+      fill: #348aa7;
+    }
+  
+    66% {
+      fill: #5dd39e;
+    }
+  
+    100% {
+      fill: #513b56;
+    }
+  }
