@@ -1,26 +1,27 @@
-import { GraduationCap, Book, BookIcon as ChapterIcon } from "lucide-react"
-import SelectWrapper from "./select-wrapper"
+import { GraduationCap, Book, BookIcon as ChapterIcon } from "lucide-react";
+import SelectWrapper from "./select-wrapper";
 
 const subjects = [
   { value: "chemistry", label: "Chemistry", enabled: true },
   { value: "psychology", label: "Psychology", enabled: true },
+  { value: "tq", label: "ترجمہ القرآن", enabled: true },
   { value: "physics", label: "Physics", enabled: false },
   { value: "biology", label: "Biology", enabled: false },
   { value: "mathematics", label: "Mathematics", enabled: false },
-]
+];
 
 const grades = [
   { value: "grade9", label: "9th Grade", enabled: true },
   { value: "grade10", label: "10th Grade", enabled: false },
   { value: "grade11", label: "11th Grade", enabled: true },
   { value: "grade12", label: "12th Grade", enabled: false },
-]
+];
 
 const chapters = Array.from({ length: 15 }, (_, i) => ({
   value: i + 1,
   label: `Chapter ${i + 1}`,
-  enabled: i === 0,
-}))
+  enabled: i >= 0 && i <= 3, // Enable chapters 1 to 4
+}));
 
 const TestForm = ({
   academyName,
@@ -43,7 +44,9 @@ const TestForm = ({
   return (
     <div className="space-y-6">
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">Academy Name</label>
+        <label className="block text-sm font-medium text-gray-700 mb-2">
+          Academy Name
+        </label>
         <input
           type="text"
           value={academyName}
@@ -79,7 +82,9 @@ const TestForm = ({
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">MCQs</label>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            MCQs
+          </label>
           <input
             type="number"
             min="0"
@@ -89,7 +94,9 @@ const TestForm = ({
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">Short Questions</label>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Short Questions
+          </label>
           <input
             type="number"
             min="0"
@@ -99,7 +106,9 @@ const TestForm = ({
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">Long Questions</label>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Long Questions
+          </label>
           <input
             type="number"
             min="0"
@@ -118,8 +127,7 @@ const TestForm = ({
         <span>Generate Test</span>
       </button>
     </div>
-  )
-}
+  );
+};
 
-export default TestForm
-
+export default TestForm;
