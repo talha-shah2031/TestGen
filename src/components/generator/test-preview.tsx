@@ -3,7 +3,8 @@
 import { motion } from "framer-motion"
 
 const TestPreview = ({ questions, subject }) => {
-  const isUrdu = subject === "psychology"; // Adjust this condition as needed
+  const urduSubjects = ["psychology", "tq", "urdu", "islamic studies", "history", "geography"]; // Add more subjects here
+  const isUrdu = urduSubjects.includes(subject);
 
   if (!questions) {
     return (
