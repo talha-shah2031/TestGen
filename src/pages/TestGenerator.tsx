@@ -28,7 +28,7 @@ const TestGenerator = () => {
 
     try {
       const payload = { grade, subject, chapter, mcqsCount, sqCount, lqCount }
-      const response = await fetch("http://localhost:3000/api/get-questions", {
+      const response = await fetch(`{apiUrl}/get-questions`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
