@@ -22,7 +22,7 @@ const TestPreview = ({ questions, subject }) => {
   }
 
   return (
-    <div className={`space-y-8 ${isUrdu ? "rtl font-urdu" : "ltr"}`}>
+    <div className={`space-y-8 ${isUrdu ? "rtl" : "ltr"}`}>
       {questions.mcqs?.questions && (
         <div>
           <h3
@@ -43,11 +43,7 @@ const TestPreview = ({ questions, subject }) => {
                   isUrdu ? "text-right" : "text-left"
                 }`}
               >
-                <p
-                  className={`font-medium text-gray-900 mb-2 ${
-                    isUrdu ? "font-urdu" : ""
-                  }`}
-                >
+                <p className="font-medium text-gray-900 mb-2">
                   {i + 1}. {q.question}
                 </p>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
@@ -56,9 +52,7 @@ const TestPreview = ({ questions, subject }) => {
                       <span className="text-indigo-600">
                         {String.fromCharCode(65 + j)}.
                       </span>
-                      <span className={isUrdu ? "font-urdu" : ""}>
-                        {option}
-                      </span>
+                      <span>{option}</span>
                     </div>
                   ))}
                 </div>
@@ -88,11 +82,7 @@ const TestPreview = ({ questions, subject }) => {
                   isUrdu ? "text-right" : "text-left"
                 }`}
               >
-                <p
-                  className={`font-medium text-gray-900 ${
-                    isUrdu ? "font-urdu" : ""
-                  }`}
-                >
+                <p className="font-medium text-gray-900">
                   {i + 1}. {q.question}
                 </p>
               </motion.div>
@@ -121,11 +111,7 @@ const TestPreview = ({ questions, subject }) => {
                   isUrdu ? "text-right" : "text-left"
                 }`}
               >
-                <p
-                  className={`font-medium text-gray-900 ${
-                    isUrdu ? "font-urdu" : ""
-                  }`}
-                >
+                <p className="font-medium text-gray-900">
                   {i + 1}. {q.question}
                 </p>
               </motion.div>
