@@ -1,65 +1,153 @@
-import { useState } from "react"
-import { motion } from "framer-motion"
-import { AlertCircle } from 'lucide-react'
-import LoadingAnimation from "../components/LoadingAnimation"
-import TestForm from "../components/generator/test-form"
-import TestPreview from "../components/generator/test-preview"
-import GenerateButtons from "../components/generator/generate-buttons"
-import { generatePDF } from "../components/generator/pdf-generator"
-import { generateWord } from "../components/generator/word-generator"
+import { useState } from "react";
+import { motion } from "framer-motion";
+import { AlertCircle } from "lucide-react";
+import LoadingAnimation from "../components/LoadingAnimation";
+import TestForm from "../components/generator/test-form";
+import TestPreview from "../components/generator/test-preview";
+import GenerateButtons from "../components/generator/generate-buttons";
+import { generatePDF } from "../components/generator/pdf-generator";
+import { generateWord } from "../components/generator/word-generator";
 
-const apiUrl = import.meta.env.VITE_SERVER_URL
+const apiUrl = import.meta.env.VITE_SERVER_URL;
+
+const gradeData = {
+  grade9: {
+    chemistry: {
+      chapters: [{ id: 1, name: "Introduction to Chemistry", value: null }],
+    },
+  },
+  grade10: {
+    chemistry: {},
+    biology: {},
+  },
+  grade11: {
+    psychology: {
+      chapters: [{ id: 1, name: "نفسیات کا تعارف", value: null }],
+    },
+    tarjamaTulQuran: {
+      chapters: [{ id: 1, name: "سورۃ البقرہ", value: null }],
+    },
+  },
+  grade12: {
+    chemistry: {},
+    physics: {},
+  },
+};
 
 const TestGenerator = () => {
-  const [grade, setGrade] = useState("grade9")
-  const [subject, setSubject] = useState("chemistry")
-  const [chapter, setChapter] = useState(1)
-  const [mcqsCount, setMcqsCount] = useState(5)
-  const [sqCount, setSqCount] = useState(3)
-  const [lqCount, setLqCount] = useState(2)
-  const [questions, setQuestions] = useState(null)
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState(null)
-  const [academyName, setAcademyName] = useState("ZAHOOR ACADEMY")
+  const [grade, setGrade] = useState(""); // Default: empty string
+  const [subject, setSubject] = useState(""); // Default: empty string
+  const [chapter, setChapter] = useState(""); // Default: empty string
+  const [mcqsCount, setMcqsCount] = useState(5);
+  const [sqCount, setSqCount] = useState(3);
+  const [lqCount, setLqCount] = useState(2);
+  const [questions, setQuestions] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [academyName, setAcademyName] = useState("YOUR ACADEMY");
+
+  // Define available grades with a placeholder option
+  const availableGrades = [
+    { value: "", label: "Select Grade", disabled: true }, // Placeholder option
+    { value: "grade9", label: "9th Grade", enabled: true },
+    { value: "grade10", label: "10th Grade", enabled: false },
+    { value: "grade11", label: "11th Grade", enabled: true },
+    { value: "grade12", label: "12th Grade", enabled: false },
+  ];
+
+  const availableSubjects = grade
+    ? [
+        { value: "", label: "Select Subject", disabled: true }, // Placeholder option
+        ...Object.keys(gradeData[grade]).map((sub) => ({
+          value: sub, // Use the key (e.g., "tq") for the value
+          label:
+            gradeData[grade][sub].displayName ||
+            sub.charAt(0).toUpperCase() + sub.slice(1), // Use displayName if available
+          enabled: true,
+        })),
+      ]
+    : [{ value: "", label: "Select Subject", disabled: true }]; // Default placeholder
+
+  // Calculate available chapters based on the selected subject
+  const availableChapters =
+    grade && subject
+      ? [
+          { value: "", label: "Select Chapter", disabled: true }, // Placeholder option
+          ...gradeData[grade][subject].chapters.map((chap) => ({
+            value: chap.id,
+            label: chap.name,
+            enabled: true,
+          })),
+        ]
+      : [{ value: "", label: "Select Chapter", disabled: true }]; // Default placeholder
+
+  // Handle grade change
+  const handleGradeChange = (selectedGrade) => {
+    setGrade(selectedGrade);
+    setSubject(""); // Reset subject
+    setChapter(""); // Reset chapter
+  };
+
+  // Handle subject change
+  const handleSubjectChange = (selectedSubject) => {
+    setSubject(selectedSubject);
+    setChapter(""); // Reset chapter
+  };
 
   const handleGenerateTest = async () => {
-    setLoading(true)
-    setError(null)
+    setLoading(true);
+    setError(null);
 
     try {
-      const payload = { grade, subject, chapter, mcqsCount, sqCount, lqCount }
+      const payload = { grade, subject, chapter, mcqsCount, sqCount, lqCount };
       const response = await fetch(`${apiUrl}get-questions`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
-      })
+      });
 
       if (!response.ok) {
-        throw new Error("Failed to fetch questions")
+        throw new Error("Failed to fetch questions");
       }
 
-      const data = await response.json()
-      setQuestions(data)
+      const data = await response.json();
+      setQuestions(data);
     } catch (error) {
-      console.error("Error:", error)
-      setError(error.message)
-      setQuestions(null)
+      console.error("Error:", error);
+      setError(error.message);
+      setQuestions(null);
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   const handleGeneratePDF = () => {
     if (questions) {
-      generatePDF(questions, academyName, subject, chapter, mcqsCount, sqCount, lqCount)
+      generatePDF(
+        questions,
+        academyName,
+        subject,
+        chapter,
+        mcqsCount,
+        sqCount,
+        lqCount
+      );
     }
-  }
+  };
 
   const handleGenerateWord = () => {
     if (questions) {
-      generateWord(questions, academyName, subject, chapter, mcqsCount, sqCount, lqCount)
+      generateWord(
+        questions,
+        academyName,
+        subject,
+        chapter,
+        mcqsCount,
+        sqCount,
+        lqCount
+      );
     }
-  }
+  };
 
   return (
     <>
@@ -70,8 +158,12 @@ const TestGenerator = () => {
           animate={{ opacity: 1, y: 0 }}
           className="text-center mb-8 sm:mb-12"
         >
-          <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">Test Generator</h1>
-          <p className="text-base sm:text-lg text-gray-600">Create custom tests with just a few clicks</p>
+          <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
+            Test Generator
+          </h1>
+          <p className="text-base sm:text-lg text-gray-600">
+            Create custom tests with just a few clicks
+          </p>
         </motion.div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -85,9 +177,9 @@ const TestGenerator = () => {
               academyName={academyName}
               setAcademyName={setAcademyName}
               grade={grade}
-              setGrade={setGrade}
+              setGrade={handleGradeChange}
               subject={subject}
-              setSubject={setSubject}
+              setSubject={handleSubjectChange}
               chapter={chapter}
               setChapter={setChapter}
               mcqsCount={mcqsCount}
@@ -98,6 +190,9 @@ const TestGenerator = () => {
               setLqCount={setLqCount}
               onGenerateTest={handleGenerateTest}
               loading={loading}
+              availableGrades={availableGrades}
+              availableSubjects={availableSubjects}
+              availableChapters={availableChapters}
             />
           </motion.div>
 
@@ -114,16 +209,20 @@ const TestGenerator = () => {
               </div>
             )}
 
-<TestPreview questions={questions} subject={subject} />
+            <TestPreview questions={questions} subject={subject} />
 
             {questions && (
-              <GenerateButtons onGeneratePDF={handleGeneratePDF} onGenerateWord={handleGenerateWord} disabled />
+              <GenerateButtons
+                onGeneratePDF={handleGeneratePDF}
+                onGenerateWord={handleGenerateWord}
+                disabled={!questions}
+              />
             )}
           </motion.div>
         </div>
       </div>
     </>
-  )
-}
+  );
+};
 
-export default TestGenerator
+export default TestGenerator;
