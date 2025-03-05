@@ -1,27 +1,6 @@
+
 import { GraduationCap, Book, BookIcon as ChapterIcon } from "lucide-react";
 import SelectWrapper from "./select-wrapper";
-
-const subjects = [
-  { value: "chemistry", label: "Chemistry", enabled: true },
-  { value: "psychology", label: "Psychology", enabled: true },
-  { value: "tq", label: "ترجمہ القرآن", enabled: true },
-  { value: "physics", label: "Physics", enabled: false },
-  { value: "biology", label: "Biology", enabled: false },
-  { value: "mathematics", label: "Mathematics", enabled: false },
-];
-
-const grades = [
-  { value: "grade9", label: "9th Grade", enabled: true },
-  { value: "grade10", label: "10th Grade", enabled: false },
-  { value: "grade11", label: "11th Grade", enabled: true },
-  { value: "grade12", label: "12th Grade", enabled: false },
-];
-
-const chapters = Array.from({ length: 15 }, (_, i) => ({
-  value: i + 1,
-  label: `Chapter ${i + 1}`,
-  enabled: i >= 0 && i <= 3, // Enable chapters 1 to 4
-}));
 
 const TestForm = ({
   academyName,
@@ -40,6 +19,9 @@ const TestForm = ({
   setLqCount,
   onGenerateTest,
   loading,
+  availableGrades,
+  availableSubjects,
+  availableChapters,
 }) => {
   return (
     <div className="space-y-6">
@@ -56,30 +38,36 @@ const TestForm = ({
         />
       </div>
 
+      {/* Grade Selection */}
       <SelectWrapper
         label="Grade"
         icon={GraduationCap}
         value={grade}
         onChange={(e) => setGrade(e.target.value)}
-        options={grades}
+        options={availableGrades}
       />
 
+      {/* Subject Selection */}
       <SelectWrapper
         label="Subject"
         icon={Book}
         value={subject}
         onChange={(e) => setSubject(e.target.value)}
-        options={subjects}
+        disabled={!grade} // Disable if no grade is selected
+        options={availableSubjects}
       />
 
+      {/* Chapter Selection */}
       <SelectWrapper
         label="Chapter"
         icon={ChapterIcon}
         value={chapter}
         onChange={(e) => setChapter(Number(e.target.value))}
-        options={chapters}
+        disabled={!subject} // Disable if no subject is selected
+        options={availableChapters}
       />
 
+      {/* Question Count Inputs */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -119,12 +107,13 @@ const TestForm = ({
         </div>
       </div>
 
+      {/* Generate Test Button */}
       <button
         onClick={onGenerateTest}
-        disabled={loading}
+        disabled={loading || !grade || !subject || !chapter}
         className="w-full bg-indigo-600 text-white py-3 px-4 rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:bg-indigo-300 disabled:cursor-not-allowed transform transition hover:scale-105 flex items-center justify-center space-x-2"
       >
-        <span>Generate Test</span>
+        <span>{loading ? "Generating..." : "Generate Test"}</span>
       </button>
     </div>
   );
