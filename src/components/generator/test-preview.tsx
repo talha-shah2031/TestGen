@@ -1,9 +1,16 @@
-"use client"
+"use client";
 
-import { motion } from "framer-motion"
+import { motion } from "framer-motion";
 
 const TestPreview = ({ questions, subject }) => {
-  const urduSubjects = ["psychology", "tq", "urdu", "islamic studies", "history", "geography"]; // Add more subjects here
+  const urduSubjects = [
+    "psychology",
+    "tarjamaTulQuran",
+    "urdu",
+    "islamic studies",
+    "history",
+    "geography",
+  ]; // Add more subjects here
   const isUrdu = urduSubjects.includes(subject);
 
   if (!questions) {
@@ -11,14 +18,18 @@ const TestPreview = ({ questions, subject }) => {
       <div className="h-full flex items-center justify-center text-gray-500">
         <p>Generated questions will appear here</p>
       </div>
-    )
+    );
   }
 
   return (
     <div className={`space-y-8 ${isUrdu ? "rtl font-urdu" : "ltr"}`}>
       {questions.mcqs?.questions && (
         <div>
-          <h3 className={`text-xl font-semibold text-gray-900 mb-4 ${isUrdu ? "text-right" : "text-left"}`}>
+          <h3
+            className={`text-xl font-semibold text-gray-900 mb-4 ${
+              isUrdu ? "text-right" : "text-left"
+            }`}
+          >
             Multiple Choice Questions
           </h3>
           <div className="space-y-4">
@@ -28,16 +39,26 @@ const TestPreview = ({ questions, subject }) => {
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: i * 0.1 }}
-                className={`bg-gray-50 p-4 rounded-lg ${isUrdu ? "text-right" : "text-left"}`}
+                className={`bg-gray-50 p-4 rounded-lg ${
+                  isUrdu ? "text-right" : "text-left"
+                }`}
               >
-                <p className={`font-medium text-gray-900 mb-2 ${isUrdu ? "font-urdu" : ""}`}>
+                <p
+                  className={`font-medium text-gray-900 mb-2 ${
+                    isUrdu ? "font-urdu" : ""
+                  }`}
+                >
                   {i + 1}. {q.question}
                 </p>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                   {q.options.map((option, j) => (
                     <div key={j} className="flex items-center space-x-2">
-                      <span className="text-indigo-600">{String.fromCharCode(65 + j)}.</span>
-                      <span className={isUrdu ? "font-urdu" : ""}>{option}</span>
+                      <span className="text-indigo-600">
+                        {String.fromCharCode(65 + j)}.
+                      </span>
+                      <span className={isUrdu ? "font-urdu" : ""}>
+                        {option}
+                      </span>
                     </div>
                   ))}
                 </div>
@@ -49,7 +70,11 @@ const TestPreview = ({ questions, subject }) => {
 
       {questions.sq?.questions && (
         <div>
-          <h3 className={`text-xl font-semibold text-gray-900 mb-4 ${isUrdu ? "text-right" : "text-left"}`}>
+          <h3
+            className={`text-xl font-semibold text-gray-900 mb-4 ${
+              isUrdu ? "text-right" : "text-left"
+            }`}
+          >
             Short Questions
           </h3>
           <div className="space-y-4">
@@ -59,9 +84,15 @@ const TestPreview = ({ questions, subject }) => {
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: i * 0.1 }}
-                className={`bg-gray-50 p-4 rounded-lg ${isUrdu ? "text-right" : "text-left"}`}
+                className={`bg-gray-50 p-4 rounded-lg ${
+                  isUrdu ? "text-right" : "text-left"
+                }`}
               >
-                <p className={`font-medium text-gray-900 ${isUrdu ? "font-urdu" : ""}`}>
+                <p
+                  className={`font-medium text-gray-900 ${
+                    isUrdu ? "font-urdu" : ""
+                  }`}
+                >
                   {i + 1}. {q.question}
                 </p>
               </motion.div>
@@ -72,7 +103,11 @@ const TestPreview = ({ questions, subject }) => {
 
       {questions.lq?.questions && (
         <div>
-          <h3 className={`text-xl font-semibold text-gray-900 mb-4 ${isUrdu ? "text-right" : "text-left"}`}>
+          <h3
+            className={`text-xl font-semibold text-gray-900 mb-4 ${
+              isUrdu ? "text-right" : "text-left"
+            }`}
+          >
             Long Questions
           </h3>
           <div className="space-y-4">
@@ -82,9 +117,15 @@ const TestPreview = ({ questions, subject }) => {
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: i * 0.1 }}
-                className={`bg-gray-50 p-4 rounded-lg ${isUrdu ? "text-right" : "text-left"}`}
+                className={`bg-gray-50 p-4 rounded-lg ${
+                  isUrdu ? "text-right" : "text-left"
+                }`}
               >
-                <p className={`font-medium text-gray-900 ${isUrdu ? "font-urdu" : ""}`}>
+                <p
+                  className={`font-medium text-gray-900 ${
+                    isUrdu ? "font-urdu" : ""
+                  }`}
+                >
                   {i + 1}. {q.question}
                 </p>
               </motion.div>
@@ -93,7 +134,7 @@ const TestPreview = ({ questions, subject }) => {
         </div>
       )}
     </div>
-  )
-}
+  );
+};
 
-export default TestPreview
+export default TestPreview;
