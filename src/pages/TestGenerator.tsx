@@ -25,7 +25,11 @@ const gradeData = {
       chapters: [{ id: 1, name: "نفسیات کا تعارف", value: null }],
     },
     tarjamaTulQuran: {
-      chapters: [{ id: 1, name: "سورۃ البقرہ", value: null }],
+      chapters: [
+        { id: 1, name: "سورۃ البقرہ", value: null },
+        { id: 2, name: "سورۃ آل عمران", value: null },
+        { id: 4, name: "سورۃ التوبہ", value: null },
+      ],
     },
   },
   grade12: {
