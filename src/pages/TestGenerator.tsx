@@ -235,3 +235,4 @@ const TestGenerator = () => {
     </>
   );
 };
+export default TestGenerator;
