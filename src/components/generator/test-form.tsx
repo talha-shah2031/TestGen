@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { GraduationCap, AlertCircle, Book, BookIcon as ChapterIcon } from "lucide-react";
 import SelectWrapper from "./select-wrapper";
@@ -22,6 +23,8 @@ const TestForm = ({
   availableGrades,
   availableSubjects,
   availableChapters,
+  time,          // New prop
+  setTime        // New prop
 }) => {
   // State for error messages
   const [error, setError] = useState(null);
@@ -101,6 +104,20 @@ const TestForm = ({
         options={availableChapters}
       />
 
+      {/* Time Input */}
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-2">
+          Time Allowed
+        </label>
+        <input
+          type="text"
+          value={time}
+          onChange={(e) => setTime(e.target.value)}
+          className="block w-full px-3 py-3 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 rounded-lg shadow-sm"
+          placeholder="e.g., 1 hour 30 minutes"
+        />
+      </div>
+
       {/* Error Message */}
       {error && (
         <div className="text-red-600 text-sm font-medium flex items-center space-x-2">
@@ -155,7 +172,7 @@ const TestForm = ({
       {/* Generate Test Button */}
       <button
         onClick={onGenerateTest}
-        disabled={loading || !grade || !subject || !chapter || error}
+        disabled={loading || !grade || !subject || !chapter || !time || error}
         className="w-full bg-indigo-600 text-white py-3 px-4 rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:bg-indigo-300 disabled:cursor-not-allowed transform transition hover:scale-105 flex items-center justify-center space-x-2"
       >
         <span>{loading ? "Generating..." : "Generate Test"}</span>
