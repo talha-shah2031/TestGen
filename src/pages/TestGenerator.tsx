@@ -22,13 +22,16 @@ const gradeData = {
   },
   grade11: {
     psychology: {
-      chapters: [{ id: 1, name: "نفسیات کا تعارف", value: null }],
+      chapters: [
+        { id: 1, name: "نفسیات کا تعارف", value: null },
+        { id: 2, name: "اسالیب تحقیق", value: null },
+      ],
     },
     tarjamaTulQuran: {
       chapters: [
         { id: 1, name: "سورۃ البقرہ", value: null },
         { id: 2, name: "سورۃ آل عمران", value: null },
-        { id: 4, name: "سورۃ التوبہ", value: null },
+        { id: 4, name: "سورۃ التوبہ", value: null },
       ],
     },
   },
@@ -49,6 +52,7 @@ const TestGenerator = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [academyName, setAcademyName] = useState("YOUR ACADEMY");
+  const [time, setTime] = useState("1 hour"); // Added time state
 
   // Define available grades with a placeholder option
   const availableGrades = [
@@ -63,16 +67,15 @@ const TestGenerator = () => {
     ? [
         { value: "", label: "Select Subject", disabled: true }, // Placeholder option
         ...Object.keys(gradeData[grade]).map((sub) => ({
-          value: sub, // Use the key (e.g., "tq") for the value
+          value: sub,
           label:
             gradeData[grade][sub].displayName ||
-            sub.charAt(0).toUpperCase() + sub.slice(1), // Use displayName if available
+            sub.charAt(0).toUpperCase() + sub.slice(1),
           enabled: true,
         })),
       ]
-    : [{ value: "", label: "Select Subject", disabled: true }]; // Default placeholder
+    : [{ value: "", label: "Select Subject", disabled: true }];
 
-  // Calculate available chapters based on the selected subject
   const availableChapters =
     grade && subject
       ? [
@@ -83,7 +86,7 @@ const TestGenerator = () => {
             enabled: true,
           })),
         ]
-      : [{ value: "", label: "Select Chapter", disabled: true }]; // Default placeholder
+      : [{ value: "", label: "Select Chapter", disabled: true }];
 
   // Handle grade change
   const handleGradeChange = (selectedGrade) => {
@@ -134,7 +137,9 @@ const TestGenerator = () => {
         chapter,
         mcqsCount,
         sqCount,
-        lqCount
+        lqCount,
+        grade, // Pass grade
+        time // Pass time
       );
     }
   };
@@ -197,6 +202,8 @@ const TestGenerator = () => {
               availableGrades={availableGrades}
               availableSubjects={availableSubjects}
               availableChapters={availableChapters}
+              time={time} // Pass time
+              setTime={setTime} // Pass setTime
             />
           </motion.div>
 
@@ -228,5 +235,3 @@ const TestGenerator = () => {
     </>
   );
 };
-
-export default TestGenerator;
