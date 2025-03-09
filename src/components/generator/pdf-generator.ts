@@ -1,4 +1,3 @@
-//import
 import jsPDF from "jspdf";
 import "jspdf-autotable";
 
@@ -104,7 +103,7 @@ export const generatePDF = (
       body: mcqTable.slice(1),
       theme: "grid",
       styles: { fontSize: 11, cellPadding: 2, textColor: [0, 0, 0], lineColor: [0, 0, 0], lineWidth: 0.1 },
-      headStyles: { fillColor: false, textColor: [0, 0, 0], fontSize: 11, lineWidth: 0.1, halign: "center" }, // Style applied with bold font set above
+      headStyles: { fillColor: false, textColor: [0, 0, 0], fontSize: 11, lineWidth: 0.1, halign: "center" },
       columnStyles: {
         ...columnWidths,
         0: { ...columnWidths[0], halign: "center", fontStyle: "bold" }, // No column bold
@@ -123,7 +122,7 @@ export const generatePDF = (
     yPosition = pdf.lastAutoTable.finalY + 10;
   }
 
-  // Short Questions
+  // Short Questions with text wrapping
   if (questions.sq?.questions) {
     pdf.setFontSize(11);
     pdf.setFont("helvetica", "bold");
@@ -132,15 +131,18 @@ export const generatePDF = (
     pdf.text(`{2×${sqCount}=${sqCount * 2} marks}`, 170, yPosition);
     yPosition += 6;
 
+    const pageWidth = 196 - 14; // Width from left margin (14mm) to right margin (196mm)
     questions.sq.questions.forEach((q, index) => {
-      pdf.text(`${index + 1}. ${q.question}`, 14, yPosition);
-      yPosition += 6;
+      const questionText = `${index + 1}. ${q.question}`;
+      const wrappedText = pdf.splitTextToSize(questionText, pageWidth); // Split text to fit within page width
+      pdf.text(wrappedText, 14, yPosition);
+      yPosition += wrappedText.length * 5; // Adjust yPosition based on number of lines (5mm per line)
     });
 
     yPosition += 6; // Extra space before Long Questions
   }
 
-  // Long Questions
+  // Long Questions with text wrapping
   if (questions.lq?.questions) {
     pdf.setFontSize(11);
     pdf.setFont("helvetica", "bold");
@@ -149,9 +151,12 @@ export const generatePDF = (
     pdf.text(`{${lqCount * 5} marks}`, 196, yPosition, { align: "right" });
     yPosition += 6;
 
+    const pageWidth = 196 - 14; // Width from left margin (14mm) to right margin (196mm)
     questions.lq.questions.forEach((q, index) => {
-      pdf.text(`${String.fromCharCode(97 + index)}. ${q.question}`, 14, yPosition);
-      yPosition += 6;
+      const questionText = `${String.fromCharCode(97 + index)}. ${q.question}`;
+      const wrappedText = pdf.splitTextToSize(questionText, pageWidth); // Split text to fit within page width
+      pdf.text(wrappedText, 14, yPosition);
+      yPosition += wrappedText.length * 5; // Adjust yPosition based on number of lines (5mm per line)
     });
   }
 
