@@ -25,12 +25,16 @@ const gradeData = {
       chapters: [
         { id: 1, name: "نفسیات کا تعارف", value: null },
         { id: 2, name: "اسالیب تحقیق", value: null },
+        { id: 3, name: " اعصابی نظام اور کردار", value: null },
+        { id: 4, name: "حواس اور ادراک", value: null },
+        { id: 5, name: " اموزش اور یاد", value: null },
       ],
     },
     tarjamaTulQuran: {
       chapters: [
         { id: 1, name: "سورۃ البقرہ", value: null },
         { id: 2, name: "سورۃ آل عمران", value: null },
+        { id: 3, name: "سورۃ انفال", value: null },
         { id: 4, name: "سورۃ التوبہ", value: null },
       ],
     },
