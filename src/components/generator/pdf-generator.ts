@@ -1,7 +1,4 @@
-import jsPDF from "jspdf";
-import "jspdf-autotable";
-
-export const generatePDF = (
+export const generateEnglishPDF = (
   questions,
   academyName,
   subject,
@@ -12,12 +9,6 @@ export const generatePDF = (
   grade,
   time
 ) => {
-  const pdf = new jsPDF({
-    orientation: "portrait",
-    unit: "mm",
-    format: "a4",
-  });
-
   // Grade to class name mapping
   const gradeToClass = {
     grade9: "Matric Part - I (9th Class)",
@@ -26,139 +17,217 @@ export const generatePDF = (
     grade12: "Intermediate Part - II (12th Class)",
   };
 
-  // Set font for header
-  pdf.setFont("Algerian", "bold"); // Academy name in Algerian bold
-  pdf.setFontSize(16);
-  pdf.text(academyName.toUpperCase(), 105, 15, { align: "center" });
+  // Convert time to English
+  const timeInEnglish = time === "1 hour" ? "1 hour" : time;
 
-  pdf.setFont("helvetica", "normal"); // Reset to Helvetica for other content
-  pdf.setFontSize(11);
-  pdf.text(gradeToClass[grade] || "Class Not Specified", 105, 22, { align: "center" });
+  // Create a new window for printing
+  const printWindow = window.open("", "_blank");
 
-  // Subject and Time in one line, Time fully right-aligned
-  pdf.text(`Subject: ${subject.charAt(0).toUpperCase() + subject.slice(1)} (LHR Board)`, 14, 30);
-  pdf.text(`Time Allowed: ${time || "1 hour"}`, 196, 30, { align: "right" });
+  // Ensure the new window is created successfully
+  if (!printWindow) {
+    alert("Please allow popups for this site to generate the PDF.");
+    return;
+  }
 
-  // Syllabus and Marks in one line, Marks fully right-aligned
-  pdf.text(`Syllabus: Chapter ${chapter}`, 14, 36);
-  pdf.text(`Maximum marks: ${mcqsCount + sqCount * 2 + lqCount * 5}`, 196, 36, { align: "right" });
+  // Build the HTML content with Google Fonts import
+  let htmlContent = `
+    <html>
+      <head>
+        <meta charset="UTF-8">
+        <title>All rights reserved by TestGen</title> <!-- Set title as requested -->
+        <style>
+          @import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap'); /* Import Poppins font */
+          
+          @page {
+            size: A4;
+            margin: 20mm 10mm 20mm 10mm; /* Increased top and bottom margins to 20mm, left and right remain 10mm */
+            @top-right {
+              content: "All rights reserved by TestGen";
+              font-family: 'Poppins', sans-serif; /* Apply Poppins font */
+              opacity: 0.5; /* Reduce opacity to 50% */
+              font-size: 8pt; /* Match the previous footer font size */
+            }
+            @bottom-center { content: ""; }
+          }
+          body {
+            margin: 0;
+            padding: 0;
+            direction: ltr; /* Left-to-right for English */
+            font-family: Arial, sans-serif; /* Default font for body */
+          }
+          .container {
+            width: 190mm;
+            margin: 0 auto;
+          }
+          h1 {
+            font-family: 'Poppins', sans-serif;
+            font-size: 20pt;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 2mm;
+          }
+          h2 {
+            font-family: 'Poppins', sans-serif;
+            font-size: 11pt;
+            margin-bottom: 1mm;
+          }
+          p {
+            margin: 0;
+            padding: 0;
+          }
+          .flex-between {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 2mm;
+          }
+          hr {
+            border: 0.2mm solid black;
+            margin: 2mm 0;
+          }
+          table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1mm;
+          }
+          th, td {
+            border: 0.1mm solid black;
+            padding: 2mm;
+            text-align: center;
+          }
+          th {
+            font-weight: bold;
+          }
+          .question {
+            margin-bottom: 4mm;
+            text-align: left; /* Left-aligned for English */
+          }
+          .question span {
+            margin-right: 5mm; /* Adjust spacing for English */
+          }
+          .section {
+            margin-bottom: 8mm;
+          }
+          .long-section {
+            margin-bottom: 15mm;
+          }
+        </style>
+      </head>
+      <body>
+        <div class="container">
+          <h1>${academyName.toUpperCase()}</h1>
+          <p style="text-align: center;">${gradeToClass[grade] || "Grade Not Specified"}</p>
+          <div class="flex-between">
+            <p>Subject: ${subject.charAt(0).toUpperCase() + subject.slice(1)} (LHR Board)</p>
+            <p>Time Allowed: ${timeInEnglish}</p>
+          </div>
+          <div class="flex-between">
+            <p>Syllabus: Chapter ${chapter}</p>
+            <p>Total Marks: ${mcqsCount + sqCount * 2 + lqCount * 5}</p>
+          </div>
+          <hr />
+  `;
 
-  // Add a bold double line between header and body
-  pdf.setLineWidth(0.4); // Increased thickness for bold effect
-  pdf.line(14, 42, 196, 42); // First line
-  pdf.line(14, 43, 196, 43); // Second line, 1mm below for clearer separation
-  pdf.setLineWidth(0.1); // Reset line width for table
-
-  let yPosition = 50;
-
-  // Function to estimate column width based on content length
-  const calculateColumnWidth = (texts) => {
-    const charWidth = 0.5; // Approximate width per character in mm
-    const minWidth = 10;   // Minimum width in mm
-    const maxWidth = 80;   // Maximum width in mm
-    const longestText = texts
-      .filter((text) => text)
-      .reduce((longest, current) => (String(current).length > longest.length ? String(current) : longest), "");
-    return Math.max(minWidth, Math.min(maxWidth, longestText.length * charWidth));
-  };
-
-  // MCQs
+  // MCQs Section
   if (questions.mcqs?.questions) {
-    pdf.setFontSize(11);
-    pdf.setFont("helvetica", "bold");
-    pdf.text("Q#1. MULTIPLE CHOICE QUESTIONS", 14, yPosition);
-    pdf.setFont("helvetica", "normal");
-    pdf.text(`{1×${mcqsCount}= ${mcqsCount} marks}`, 170, yPosition);
-    yPosition += 6;
-
-    const mcqTable = [["No", "Question", "A", "B", "C", "D"]];
+    htmlContent += `
+      <div class="section">
+        <h2 style="display: flex; justify-content: space-between;">
+          <span>Question #1: Multiple Choice Questions</span>
+          <span>{${mcqsCount}×1 = ${mcqsCount} marks}</span>
+        </h2>
+        <table>
+          <thead>
+            <tr>
+              <th>No.</th>
+              <th>Question</th>
+              <th>A</th>
+              <th>B</th>
+              <th>C</th>
+              <th>D</th>
+            </tr>
+          </thead>
+          <tbody>
+    `;
     questions.mcqs.questions.forEach((q, index) => {
-      mcqTable.push([(index + 1).toString(), q.question, q.options[0], q.options[1], q.options[2], q.options[3]]);
+      htmlContent += `
+        <tr>
+          <td>${index + 1}</td>
+          <td style="text-align: left;">${q.question}</td>
+          <td>${q.options[0]}</td>
+          <td>${q.options[1]}</td>
+          <td>${q.options[2]}</td>
+          <td>${q.options[3]}</td>
+        </tr>
+      `;
     });
-
-    // Calculate dynamic column widths
-    const columnWidths = {
-      0: calculateColumnWidth(mcqTable.map(row => row[0])), // No
-      1: calculateColumnWidth(mcqTable.map(row => row[1])), // Question
-      2: calculateColumnWidth(mcqTable.map(row => row[2])), // A
-      3: calculateColumnWidth(mcqTable.map(row => row[3])), // B
-      4: calculateColumnWidth(mcqTable.map(row => row[4])), // C
-      5: calculateColumnWidth(mcqTable.map(row => row[5])), // D
-    };
-
-    const totalWidth = Object.values(columnWidths).reduce((sum, width) => sum + width, 0);
-    const pageWidth = 190;
-    if (totalWidth > pageWidth) {
-      const scaleFactor = pageWidth / totalWidth;
-      Object.keys(columnWidths).forEach(key => {
-        columnWidths[key] = columnWidths[key] * scaleFactor;
-      });
-    }
-
-    // Explicitly set font to bold for the header row before autoTable
-    pdf.setFont("helvetica", "bold");
-    pdf.autoTable({
-      startY: yPosition,
-      head: [mcqTable[0]],
-      body: mcqTable.slice(1),
-      theme: "grid",
-      styles: { fontSize: 11, cellPadding: 2, textColor: [0, 0, 0], lineColor: [0, 0, 0], lineWidth: 0.1 },
-      headStyles: { fillColor: false, textColor: [0, 0, 0], fontSize: 11, lineWidth: 0.1, halign: "center" },
-      columnStyles: {
-        ...columnWidths,
-        0: { ...columnWidths[0], halign: "center", fontStyle: "bold" }, // No column bold
-        1: { ...columnWidths[1], halign: "left" },
-        2: { ...columnWidths[2], halign: "center" },
-        3: { ...columnWidths[3], halign: "center" },
-        4: { ...columnWidths[4], halign: "center" },
-        5: { ...columnWidths[5], halign: "center" },
-      },
-      bodyStyles: { fillColor: false, lineWidth: 0.1, fontStyle: "normal" },
-      didDrawPage: () => {
-        pdf.setFont("helvetica", "normal"); // Reset font to normal after table
-      },
-    });
-
-    yPosition = pdf.lastAutoTable.finalY + 10;
+    htmlContent += `
+          </tbody>
+        </table>
+      </div>
+    `;
   }
 
-  // Short Questions with text wrapping
+  // Short Questions Section
   if (questions.sq?.questions) {
-    pdf.setFontSize(11);
-    pdf.setFont("helvetica", "bold");
-    pdf.text("Q#2. GIVE SHORT ANSWERS", 14, yPosition);
-    pdf.setFont("helvetica", "normal");
-    pdf.text(`{2×${sqCount}=${sqCount * 2} marks}`, 170, yPosition);
-    yPosition += 6;
-
-    const pageWidth = 196 - 14; // Width from left margin (14mm) to right margin (196mm)
+    htmlContent += `
+      <div class="section">
+        <h2 style="display: flex; justify-content: space-between;">
+          <span>Question #2: Give Short Answers</span>
+          <span>{${sqCount}×2 = ${sqCount * 2} marks}</span>
+        </h2>
+        <div style="margin-top: 1mm;">
+    `;
     questions.sq.questions.forEach((q, index) => {
-      const questionText = `${index + 1}. ${q.question}`;
-      const wrappedText = pdf.splitTextToSize(questionText, pageWidth); // Split text to fit within page width
-      pdf.text(wrappedText, 14, yPosition);
-      yPosition += wrappedText.length * 5; // Adjust yPosition based on number of lines (5mm per line)
+      htmlContent += `
+        <div class="question">
+          <span><strong>${index + 1}.</strong></span> ${q.question}
+        </div>
+      `;
     });
-
-    yPosition += 6; // Extra space before Long Questions
+    htmlContent += `
+        </div>
+      </div>
+    `;
   }
 
-  // Long Questions with text wrapping
+  // Long Questions Section
   if (questions.lq?.questions) {
-    pdf.setFontSize(11);
-    pdf.setFont("helvetica", "bold");
-    pdf.text("Q#3. ATTEMPT ALL QUESTIONS", 14, yPosition);
-    pdf.setFont("helvetica", "normal");
-    pdf.text(`{${lqCount * 5} marks}`, 196, yPosition, { align: "right" });
-    yPosition += 6;
-
-    const pageWidth = 196 - 14; // Width from left margin (14mm) to right margin (196mm)
+    htmlContent += `
+      <div class="long-section">
+        <h2 style="display: flex; justify-content: space-between;">
+          <span>Question #3: Attempt All Questions</span>
+          <span>{${lqCount * 5} marks}</span>
+        </h2>
+        <div style="margin-top: 1mm;">
+    `;
     questions.lq.questions.forEach((q, index) => {
-      const questionText = `${String.fromCharCode(97 + index)}. ${q.question}`;
-      const wrappedText = pdf.splitTextToSize(questionText, pageWidth); // Split text to fit within page width
-      pdf.text(wrappedText, 14, yPosition);
-      yPosition += wrappedText.length * 5; // Adjust yPosition based on number of lines (5mm per line)
+      htmlContent += `
+        <div class="question">
+          <span><strong>${String.fromCharCode(97 + index)}.</strong></span> ${q.question}
+        </div>
+      `;
     });
+    htmlContent += `
+        </div>
+      </div>
+    `;
   }
 
-  pdf.save("generated_test.pdf");
+  // Close HTML
+  htmlContent += `
+        </div>
+      </body>
+    </html>
+  `;
+
+  // Write content to the new window and trigger print
+  printWindow.document.write(htmlContent);
+  printWindow.document.close();
+
+  // Wait for content to render before printing
+  printWindow.onload = () => {
+    printWindow.print();
+    // Optionally close the window after printing (uncomment if desired)
+    // printWindow.close();
+  };
 };
