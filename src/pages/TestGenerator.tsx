@@ -5,8 +5,8 @@ import LoadingAnimation from "../components/LoadingAnimation";
 import TestForm from "../components/generator/test-form";
 import TestPreview from "../components/generator/test-preview";
 import GenerateButtons from "../components/generator/generate-buttons";
-import { generatePDF } from "../components/generator/pdf-generator";
-import { generateWord } from "../components/generator/word-generator";
+import { generateEnglishPDF } from "../components/generator/pdf-generator";
+import { generateUrduPDF } from "../components/generator/generateUrduPDF";
 
 const apiUrl = import.meta.env.VITE_SERVER_URL;
 
@@ -134,31 +134,31 @@ const TestGenerator = () => {
 
   const handleGeneratePDF = () => {
     if (questions) {
-      generatePDF(
-        questions,
-        academyName,
-        subject,
-        chapter,
-        mcqsCount,
-        sqCount,
-        lqCount,
-        grade, // Pass grade
-        time // Pass time
-      );
-    }
-  };
-
-  const handleGenerateWord = () => {
-    if (questions) {
-      generateWord(
-        questions,
-        academyName,
-        subject,
-        chapter,
-        mcqsCount,
-        sqCount,
-        lqCount
-      );
+      if (subject === "psychology" || subject === "tarjamaTulQuran") {
+        generateUrduPDF(
+          questions,
+          academyName,
+          subject,
+          chapter,
+          mcqsCount,
+          sqCount,
+          lqCount,
+          grade,
+          time
+        );
+      } else {
+        generateEnglishPDF(
+          questions,
+          academyName,
+          subject,
+          chapter,
+          mcqsCount,
+          sqCount,
+          lqCount,
+          grade,
+          time
+        );
+      }
     }
   };
 
@@ -229,7 +229,6 @@ const TestGenerator = () => {
             {questions && (
               <GenerateButtons
                 onGeneratePDF={handleGeneratePDF}
-                onGenerateWord={handleGenerateWord}
                 disabled={!questions}
               />
             )}
