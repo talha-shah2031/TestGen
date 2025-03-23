@@ -20,40 +20,33 @@ export const generateEnglishPDF = (
   // Convert time to English
   const timeInEnglish = time === "1 hour" ? "1 hour" : time;
 
-  // Create a new window for printing
-  const printWindow = window.open("", "_blank");
-
-  // Ensure the new window is created successfully
-  if (!printWindow) {
-    alert("Please allow popups for this site to generate the PDF.");
-    return;
-  }
-
-  // Build the HTML content with Google Fonts import
+  // Build the HTML content with Google Fonts import and MathJax
   let htmlContent = `
     <html>
       <head>
         <meta charset="UTF-8">
-        <title>All rights reserved by TestGen</title> <!-- Set title as requested -->
+        <title>All rights reserved by TestGen</title>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/js-polyfills/0.1.43/polyfill.min.js" integrity="sha512-lvWiOP+aMKHllm4THsjzNleVuGOh0WGniJ3lgu/nvCbex1LlaQSxySUjAu/LTJw9FhnSL/PVYoQcckg1Q03+fQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+        <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
         <style>
-          @import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap'); /* Import Poppins font */
+          @import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap');
           
           @page {
             size: A4;
-            margin: 20mm 10mm 20mm 10mm; /* Increased top and bottom margins to 20mm, left and right remain 10mm */
+            margin: 20mm 10mm 20mm 10mm;
             @top-right {
               content: "All rights reserved by TestGen";
-              font-family: 'Poppins', sans-serif; /* Apply Poppins font */
-              opacity: 0.5; /* Reduce opacity to 50% */
-              font-size: 8pt; /* Match the previous footer font size */
+              font-family: 'Poppins', sans-serif;
+              opacity: 0.5;
+              font-size: 8pt;
             }
             @bottom-center { content: ""; }
           }
           body {
             margin: 0;
             padding: 0;
-            direction: ltr; /* Left-to-right for English */
-            font-family: Arial, sans-serif; /* Default font for body */
+            direction: ltr;
+            font-family: Arial, sans-serif;
           }
           .container {
             width: 190mm;
@@ -99,10 +92,10 @@ export const generateEnglishPDF = (
           }
           .question {
             margin-bottom: 4mm;
-            text-align: left; /* Left-aligned for English */
+            text-align: left;
           }
           .question span {
-            margin-right: 5mm; /* Adjust spacing for English */
+            margin-right: 5mm;
           }
           .section {
             margin-bottom: 8mm;
@@ -220,14 +213,25 @@ export const generateEnglishPDF = (
     </html>
   `;
 
-  // Write content to the new window and trigger print
-  printWindow.document.write(htmlContent);
-  printWindow.document.close();
+  // Create a hidden iframe to hold the content
+  const iframe = document.createElement("iframe");
+  iframe.style.position = "absolute";
+  iframe.style.top = "-1000px";
+  iframe.style.left = "-1000px";
+  document.body.appendChild(iframe);
 
-  // Wait for content to render before printing
-  printWindow.onload = () => {
-    printWindow.print();
-    // Optionally close the window after printing (uncomment if desired)
-    // printWindow.close();
+  // Write the content to the iframe
+  const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+  iframeDoc.open();
+  iframeDoc.write(htmlContent);
+  iframeDoc.close();
+
+  // Trigger the print dialog
+  iframe.onload = () => {
+    iframe.contentWindow.print();
+    // Optionally remove the iframe after printing
+    setTimeout(() => {
+      document.body.removeChild(iframe);
+    }, 1000); // Wait for print dialog to close
   };
 };
