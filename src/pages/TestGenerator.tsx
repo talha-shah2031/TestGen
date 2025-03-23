@@ -17,8 +17,12 @@ const gradeData = {
     },
   },
   grade10: {
-    chemistry: {},
-    biology: {},
+    chemistry: {
+      chapters: [{ id: 1, name: "Chemical Equilibrium", value: null },
+        { id: 2, name: "Acid, Base and Salts", value: null }
+      ],
+    },
+  
   },
   grade11: {
     psychology: {
@@ -62,7 +66,7 @@ const TestGenerator = () => {
   const availableGrades = [
     { value: "", label: "Select Grade", disabled: true }, // Placeholder option
     { value: "grade9", label: "9th Grade", enabled: true },
-    { value: "grade10", label: "10th Grade", enabled: false },
+    { value: "grade10", label: "10th Grade", enabled: true},
     { value: "grade11", label: "11th Grade", enabled: true },
     { value: "grade12", label: "12th Grade", enabled: false },
   ];
