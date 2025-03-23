@@ -1,35 +1,241 @@
 import React from 'react';
+import styled from 'styled-components';
 
 const LoadingAnimation = () => {
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black/50 backdrop-blur-sm z-50">
-      <div className="content">
-        <svg
-          id="loader"
-          xmlns="http://www.w3.org/2000/svg"
-          width="150"
-          height="150"
-          viewBox="0 -10 261 355"
-        >
-          <g>
-            <path d="M230.023 80.02l-.023.03v15.044l-11.96.006v20.75l-19.354 9.142V95.107l-9.93-.04v34.6l-19.417 9.254-.003-43.777-14.146-.016v50.414l-19.354 9.146.002-59.55-9.93.027v59.434l-19.508-9.212V95.15l-13.774-.13-.002 43.766-19.332-9.053V95.12l-9.97.045v29.893l-19.398-9.187V95.177l-11.983.006v15.03l-17.122-8.09 17.078-6.983V80.22L.286 95.257 0 95.12v188.953l123.418 58.308 7.543 3.56 7.542-3.56 123.42-58.306V95.12l-.233.11-31.667-15.06zm-.002 15.076l17.126 7.002-17.125 8.09zM15.083 118.93l108.336 51.177v155.59L15.082 274.52zm231.756 0v155.59l-108.336 51.177v-155.59z" />
-            <path
-              id="pen1"
-              d="M68.26.058L31.934 51.22l.002 58.06H43.9V59.536h19.423v49.742h9.97V59.536H92.62v49.742h11.967V51.22l-1.105-1.554L68.262.058zm6.43 29.72l14.047 19.788H47.784L61.67 30.01l13.02-.23z"
-            />
-            <path
-              id="pen2"
-              d="M130.808 13.936L94.48 65.098l.002 58.058h11.964V73.414h19.424v49.742h9.97V73.414h19.327v49.742h11.967V65.098l-1.105-1.555-35.222-49.607zm6.427 29.72l14.05 19.787H110.33l13.886-19.556 13.02-.23z"
-            />
-            <path
-              id="pen3"
-              d="M193.684.083l-36.328 51.162.002 58.058h11.965V59.56h19.424v49.743h9.97V59.56h19.326v49.743h11.967V51.245l-1.105-1.555L193.685.083zm6.428 29.72l14.05 19.787h-40.955l13.885-19.556 13.02-.23z"
-            />
+    <StyledWrapper>
+      <svg xmlns="http://www.w3.org/2000/svg" height="200px" width="200px" viewBox="0 0 200 200" className="pencil">
+        <defs>
+          <clipPath id="pencil-eraser">
+            <rect height={30} width={30} ry={5} rx={5} />
+          </clipPath>
+        </defs>
+        <circle transform="rotate(-113,100,100)" strokeLinecap="round" strokeDashoffset="439.82" strokeDasharray="439.82 439.82" strokeWidth={2} stroke="currentColor" fill="none" r={70} className="pencil__stroke" />
+        <g transform="translate(100,100)" className="pencil__rotate">
+          <g fill="none">
+            <circle transform="rotate(-90)" strokeDashoffset={402} strokeDasharray="402.12 402.12" strokeWidth={30} stroke="hsl(223,90%,50%)" r={64} className="pencil__body1" />
+            <circle transform="rotate(-90)" strokeDashoffset={465} strokeDasharray="464.96 464.96" strokeWidth={10} stroke="hsl(223,90%,60%)" r={74} className="pencil__body2" />
+            <circle transform="rotate(-90)" strokeDashoffset={339} strokeDasharray="339.29 339.29" strokeWidth={10} stroke="hsl(223,90%,40%)" r={54} className="pencil__body3" />
           </g>
-        </svg>
-      </div>
-    </div>
+          <g transform="rotate(-90) translate(49,0)" className="pencil__eraser">
+            <g className="pencil__eraser-skew">
+              <rect height={30} width={30} ry={5} rx={5} fill="hsl(223,90%,70%)" />
+              <rect clipPath="url(#pencil-eraser)" height={30} width={5} fill="hsl(223,90%,60%)" />
+              <rect height={20} width={30} fill="hsl(223,10%,90%)" />
+              <rect height={20} width={15} fill="hsl(223,10%,70%)" />
+              <rect height={20} width={5} fill="hsl(223,10%,80%)" />
+              <rect height={2} width={30} y={6} fill="hsla(223,10%,10%,0.2)" />
+              <rect height={2} width={30} y={13} fill="hsla(223,10%,10%,0.2)" />
+            </g>
+          </g>
+          <g transform="rotate(-90) translate(49,-30)" className="pencil__point">
+            <polygon points="15 0,30 30,0 30" fill="hsl(33,90%,70%)" />
+            <polygon points="15 0,6 30,0 30" fill="hsl(33,90%,50%)" />
+            <polygon points="15 0,20 10,10 10" fill="hsl(223,10%,10%)" />
+          </g>
+        </g>
+      </svg>
+    </StyledWrapper>
   );
-};
+}
+
+const StyledWrapper = styled.div`
+  position: fixed; /* Fixed positioning to cover the entire screen */
+  top: 0;
+  left: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  display: flex;
+  justify-content: center; /* Center horizontally */
+  align-items: center; /* Center vertically */
+  background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black background */
+  backdrop-filter: blur(5px); /* Blur effect */
+  z-index: 1000; /* Ensure it's on top of other content */
+
+  .pencil {
+    display: block;
+    width: 10em;
+    height: 10em;
+  }
+
+  .pencil__body1,
+  .pencil__body2,
+  .pencil__body3,
+  .pencil__eraser,
+  .pencil__eraser-skew,
+  .pencil__point,
+  .pencil__rotate,
+  .pencil__stroke {
+    animation-duration: 3s;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+  }
+
+  .pencil__body1,
+  .pencil__body2,
+  .pencil__body3 {
+    transform: rotate(-90deg);
+  }
+
+  .pencil__body1 {
+    animation-name: pencilBody1;
+  }
+
+  .pencil__body2 {
+    animation-name: pencilBody2;
+  }
+
+  .pencil__body3 {
+    animation-name: pencilBody3;
+  }
+
+  .pencil__eraser {
+    animation-name: pencilEraser;
+    transform: rotate(-90deg) translate(49px,0);
+  }
+
+  .pencil__eraser-skew {
+    animation-name: pencilEraserSkew;
+    animation-timing-function: ease-in-out;
+  }
+
+  .pencil__point {
+    animation-name: pencilPoint;
+    transform: rotate(-90deg) translate(49px,-30px);
+  }
+
+  .pencil__rotate {
+    animation-name: pencilRotate;
+  }
+
+  .pencil__stroke {
+    animation-name: pencilStroke;
+    transform: translate(100px,100px) rotate(-113deg);
+  }
+
+  /* Animations */
+  @keyframes pencilBody1 {
+    from,
+    to {
+      stroke-dashoffset: 351.86;
+      transform: rotate(-90deg);
+    }
+
+    50% {
+      stroke-dashoffset: 150.8;
+      transform: rotate(-225deg);
+    }
+  }
+
+  @keyframes pencilBody2 {
+    from,
+    to {
+      stroke-dashoffset: 406.84;
+      transform: rotate(-90deg);
+    }
+
+    50% {
+      stroke-dashoffset: 174.36;
+      transform: rotate(-225deg);
+    }
+  }
+
+  @keyframes pencilBody3 {
+    from,
+    to {
+      stroke-dashoffset: 296.88;
+      transform: rotate(-90deg);
+    }
+
+    50% {
+      stroke-dashoffset: 127.23;
+      transform: rotate(-225deg);
+    }
+  }
+
+  @keyframes pencilEraser {
+    from,
+    to {
+      transform: rotate(-45deg) translate(49px,0);
+    }
+
+    50% {
+      transform: rotate(0deg) translate(49px,0);
+    }
+  }
+
+  @keyframes pencilEraserSkew {
+    from,
+    32.5%,
+    67.5%,
+    to {
+      transform: skewX(0);
+    }
+
+    35%,
+    65% {
+      transform: skewX(-4deg);
+    }
+
+    37.5%,
+    62.5% {
+      transform: skewX(8deg);
+    }
+
+    40%,
+    45%,
+    50%,
+    55%,
+    60% {
+      transform: skewX(-15deg);
+    }
+
+    42.5%,
+    47.5%,
+    52.5%,
+    57.5% {
+      transform: skewX(15deg);
+    }
+  }
+
+  @keyframes pencilPoint {
+    from,
+    to {
+      transform: rotate(-90deg) translate(49px,-30px);
+    }
+
+    50% {
+      transform: rotate(-225deg) translate(49px,-30px);
+    }
+  }
+
+  @keyframes pencilRotate {
+    from {
+      transform: translate(100px,100px) rotate(0);
+    }
+
+    to {
+      transform: translate(100px,100px) rotate(720deg);
+    }
+  }
+
+  @keyframes pencilStroke {
+    from {
+      stroke-dashoffset: 439.82;
+      transform: translate(100px,100px) rotate(-113deg);
+    }
+
+    50% {
+      stroke-dashoffset: 164.93;
+      transform: translate(100px,100px) rotate(-113deg);
+    }
+
+    75%,
+    to {
+      stroke-dashoffset: 439.82;
+      transform: translate(100px,100px) rotate(112deg);
+    }
+  }
+`;
 
 export default LoadingAnimation;
