@@ -213,25 +213,85 @@ export const generateEnglishPDF = (
     </html>
   `;
 
-  // Create a hidden iframe to hold the content
-  const iframe = document.createElement("iframe");
-  iframe.style.position = "absolute";
-  iframe.style.top = "-1000px";
-  iframe.style.left = "-1000px";
-  document.body.appendChild(iframe);
+  // Pre-render MathJax in a hidden div in the main document
+  const preRenderMathJax = (content) => {
+    return new Promise((resolve, reject) => {
+      // Create a hidden div to render content
+      const tempDiv = document.createElement("div");
+      tempDiv.style.position = "absolute";
+      tempDiv.style.top = "-1000px";
+      tempDiv.style.left = "-1000px";
+      document.body.appendChild(tempDiv);
 
-  // Write the content to the iframe
-  const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
-  iframeDoc.open();
-  iframeDoc.write(htmlContent);
-  iframeDoc.close();
+      // Inject content into the temporary div
+      tempDiv.innerHTML = content;
 
-  // Trigger the print dialog
-  iframe.onload = () => {
-    iframe.contentWindow.print();
-    // Optionally remove the iframe after printing
-    setTimeout(() => {
-      document.body.removeChild(iframe);
-    }, 1000); // Wait for print dialog to close
+      // Check if MathJax is available and render
+      if (window.MathJax && typeof window.MathJax.typesetPromise === "function") {
+        window.MathJax.typesetPromise([tempDiv])
+          .then(() => {
+            const renderedContent = tempDiv.innerHTML;
+            document.body.removeChild(tempDiv); // Clean up
+            resolve(renderedContent);
+          })
+          .catch((err) => {
+            console.error("MathJax pre-rendering failed:", err);
+            document.body.removeChild(tempDiv); // Clean up even on error
+            reject(err);
+          });
+      } else {
+        // If MathJax isn't loaded yet, wait and retry
+        setTimeout(() => {
+          preRenderMathJax(content).then(resolve).catch(reject);
+        }, 100);
+        document.body.removeChild(tempDiv); // Clean up
+      }
+    });
   };
+
+  // Generate and print the PDF after MathJax pre-rendering
+  preRenderMathJax(htmlContent)
+    .then((renderedContent) => {
+      // Create a hidden iframe to hold the pre-rendered content
+      const iframe = document.createElement("iframe");
+      iframe.style.position = "absolute";
+      iframe.style.top = "-1000px";
+      iframe.style.left = "-1000px";
+      document.body.appendChild(iframe);
+
+      // Write the pre-rendered content to the iframe
+      const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+      iframeDoc.open();
+      iframeDoc.write(renderedContent);
+      iframeDoc.close();
+
+      // Trigger print once the iframe is loaded
+      iframe.onload = () => {
+        iframe.contentWindow.print();
+        setTimeout(() => {
+          document.body.removeChild(iframe);
+        }, 1000); // Clean up after printing
+      };
+    })
+    .catch((err) => {
+      console.error("Failed to pre-render MathJax content:", err);
+      // Fallback: Print without pre-rendering
+      const iframe = document.createElement("iframe");
+      iframe.style.position = "absolute";
+      iframe.style.top = "-1000px";
+      iframe.style.left = "-1000px";
+      document.body.appendChild(iframe);
+
+      const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+      iframeDoc.open();
+      iframeDoc.write(htmlContent);
+      iframeDoc.close();
+
+      iframe.onload = () => {
+        iframe.contentWindow.print();
+        setTimeout(() => {
+          document.body.removeChild(iframe);
+        }, 1000);
+      };
+    });
 };
