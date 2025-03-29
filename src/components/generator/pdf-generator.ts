@@ -1,3 +1,4 @@
+
 export const generateEnglishPDF = (
   questions,
   academyName,
@@ -29,39 +30,45 @@ export const generateEnglishPDF = (
         <script src="https://cdnjs.cloudflare.com/ajax/libs/js-polyfills/0.1.43/polyfill.min.js" integrity="sha512-lvWiOP+aMKHllm4THsjzNleVuGOh0WGniJ3lgu/nvCbex1LlaQSxySUjAu/LTJw9FhnSL/PVYoQcckg1Q03+fQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
         <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
         <style>
-          @import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap');
+          @import url('https://fonts.googleapis.com/css2?family=Poppins&family=Times+New+Roman&display=swap');
           
           @page {
             size: A4;
-            margin: 20mm 10mm 20mm 10mm;
+            margin: 15mm 10mm 15mm 10mm; /* Equal top and bottom margins */
             @top-right {
               content: "All rights reserved by TestGen";
-              font-family: 'Poppins', sans-serif;
+              font-family: 'Times New Roman', serif;
               opacity: 0.5;
               font-size: 8pt;
             }
-            @bottom-center { content: ""; }
+            @bottom-center { 
+              content: counter(page) "/" counter(pages);
+              font-size: 10pt;
+            }
           }
           body {
             margin: 0;
             padding: 0;
             direction: ltr;
-            font-family: Arial, sans-serif;
+            font-family: 'Times New Roman', serif;
+            font-size: 11pt;
+            line-height: 1.3;
           }
           .container {
             width: 190mm;
             margin: 0 auto;
           }
           h1 {
-            font-family: 'Poppins', sans-serif;
-            font-size: 20pt;
+            font-family: 'Times New Roman', serif;
+            font-size: 18pt;
             font-weight: bold;
             text-align: center;
             margin-bottom: 2mm;
           }
           h2 {
-            font-family: 'Poppins', sans-serif;
+            font-family: 'Times New Roman', serif;
             font-size: 11pt;
+            font-weight: bold;
             margin-bottom: 1mm;
           }
           p {
@@ -71,7 +78,23 @@ export const generateEnglishPDF = (
           .flex-between {
             display: flex;
             justify-content: space-between;
-            margin-top: 2mm;
+            margin-top: 0.5mm;
+          }
+          .student-info {
+            display: flex;
+            justify-content: space-between;
+            margin: 1mm 0;
+          }
+          .student-info div {
+            display: flex;
+            gap: 2mm;
+          }
+          .student-info span {
+            font-weight: bold;
+          }
+          .student-info .line {
+            border-bottom: 0.5mm solid #000;
+            width: 50mm;
           }
           hr {
             border: 0.2mm solid black;
@@ -80,44 +103,90 @@ export const generateEnglishPDF = (
           table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 1mm;
+            margin-top: 3mm;
           }
           th, td {
             border: 0.1mm solid black;
             padding: 2mm;
             text-align: center;
+            font-size: 11pt;
           }
           th {
             font-weight: bold;
+            background-color: #f5f5f5;
+          }
+          td[style*="text-align: left"] {
+            text-align: left;
           }
           .question {
-            margin-bottom: 4mm;
+            margin-bottom: 1.5mm; /* Increased spacing between questions */
             text-align: left;
           }
           .question span {
             margin-right: 5mm;
+            display: inline-block;
+            width: 5mm;
           }
           .section {
-            margin-bottom: 8mm;
+            margin-bottom: 6.5mm;
           }
           .long-section {
-            margin-bottom: 15mm;
+            margin-bottom: 2mm;
+          }
+          .website-info {
+            text-align: center;
+            font-style: italic;
+            font-size: 7pt;
+            margin: 2mm 0;
+            padding: 0.7mm 0;
+            border-top: 0.2mm solid black;
+            border-bottom: 0.2mm solid black;
+          }
+          .footer {
+            text-align: center;
+            font-size: 10pt;
+            margin-top: 10mm;
+            border-top: 0.1mm solid #ccc;
+            padding-top: 2mm;
+          }
+          .mcq-option {
+            text-align: left;
+            padding-left: 5mm;
           }
         </style>
       </head>
       <body>
         <div class="container">
           <h1>${academyName.toUpperCase()}</h1>
-          <p style="text-align: center;">${gradeToClass[grade] || "Grade Not Specified"}</p>
+          <p style="text-align: center; font-weight: bold;">${
+            gradeToClass[grade] || "Grade Not Specified"
+          }</p>
+          
+          <div class="student-info">
+            <div>
+              <span>Name:</span>
+              <div class="line"></div>
+            </div>
+            <div>
+              <span>Roll #:</span>
+              <div class="line"></div>
+            </div>
+          </div>
+          
           <div class="flex-between">
-            <p>Subject: ${subject.charAt(0).toUpperCase() + subject.slice(1)} (LHR Board)</p>
+            <p>Subject: ${
+              subject.charAt(0).toUpperCase() + subject.slice(1)
+            } (LHR Board)</p>
             <p>Time Allowed: ${timeInEnglish}</p>
           </div>
           <div class="flex-between">
             <p>Syllabus: Chapter ${chapter}</p>
             <p>Total Marks: ${mcqsCount + sqCount * 2 + lqCount * 5}</p>
           </div>
-          <hr />
+          
+          <div class="website-info">
+            https://testgen-indol.vercel.app for generating all type of question papers and study in study room.
+          </div>
   `;
 
   // MCQs Section
@@ -131,12 +200,12 @@ export const generateEnglishPDF = (
         <table>
           <thead>
             <tr>
-              <th>No.</th>
-              <th>Question</th>
-              <th>A</th>
-              <th>B</th>
-              <th>C</th>
-              <th>D</th>
+              <th style="width: 5%;">No.</th>
+              <th style="width: 55%;">Question</th>
+              <th style="width: 10%;">A</th>
+              <th style="width: 10%;">B</th>
+              <th style="width: 10%;">C</th>
+              <th style="width: 10%;">D</th>
             </tr>
           </thead>
           <tbody>
@@ -146,10 +215,10 @@ export const generateEnglishPDF = (
         <tr>
           <td>${index + 1}</td>
           <td style="text-align: left;">${q.question}</td>
-          <td>${q.options[0]}</td>
-          <td>${q.options[1]}</td>
-          <td>${q.options[2]}</td>
-          <td>${q.options[3]}</td>
+          <td class="mcq-option">${q.options[0]}</td>
+          <td class="mcq-option">${q.options[1]}</td>
+          <td class="mcq-option">${q.options[2]}</td>
+          <td class="mcq-option">${q.options[3]}</td>
         </tr>
       `;
     });
@@ -196,7 +265,9 @@ export const generateEnglishPDF = (
     questions.lq.questions.forEach((q, index) => {
       htmlContent += `
         <div class="question">
-          <span><strong>${String.fromCharCode(97 + index)}.</strong></span> ${q.question}
+          <span><strong>${String.fromCharCode(97 + index)}.</strong></span> ${
+        q.question
+      }
         </div>
       `;
     });
@@ -206,12 +277,15 @@ export const generateEnglishPDF = (
     `;
   }
 
-  // Close HTML
-  htmlContent += `
-        </div>
-      </body>
-    </html>
-  `;
+  // // Footer
+  // htmlContent += `
+  //       <div class="footer">
+  //         https://testgen.com/tests/#
+  //       </div>
+  //       </div>
+  //     </body>
+  //   </html>
+  // `;
 
   // Pre-render MathJax in a hidden div in the main document
   const preRenderMathJax = (content) => {
@@ -227,7 +301,10 @@ export const generateEnglishPDF = (
       tempDiv.innerHTML = content;
 
       // Check if MathJax is available and render
-      if (window.MathJax && typeof window.MathJax.typesetPromise === "function") {
+      if (
+        window.MathJax &&
+        typeof window.MathJax.typesetPromise === "function"
+      ) {
         window.MathJax.typesetPromise([tempDiv])
           .then(() => {
             const renderedContent = tempDiv.innerHTML;
