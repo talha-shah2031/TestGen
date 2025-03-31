@@ -19,7 +19,8 @@ const gradeData = {
   grade10: {
     chemistry: {
       chapters: [{ id: 1, name: "Chemical Equilibrium", value: null },
-        { id: 2, name: "Acid, Base and Salts", value: null }
+       { id: 2, name: "Acid, Base and Salts", value: null },
+        { id: 3, name: "Organic chemistry", value: null },
       ],
     },
   
