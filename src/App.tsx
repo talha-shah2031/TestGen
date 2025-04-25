@@ -5,6 +5,7 @@ import TestGenerator from './pages/TestGenerator';
 import StudyRoom from './pages/StudyRoom'; // Assuming StudyRoom is in components folder
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
+import DateSheet from './pages/DateSheet';
 
 const App: React.FC = () => {
   return (
@@ -16,6 +17,8 @@ const App: React.FC = () => {
             <Route path="/" element={<LandingPage />} />
             <Route path="/generator" element={<TestGenerator />} />
             <Route path="/study-room" element={<StudyRoom />} />
+            <Route path="/date-sheet" element={<DateSheet />} />
+            {/* Add more routes as needed */}
           </Routes>
         </div>
         <Footer />
